@@ -1,0 +1,67 @@
+public class HastaHandler {
+    public static void createdDoctor(List<Hasta__c> ListHasta){
+         List< Hasta__Share> ListSharing = new  List< Hasta__Share>(); 
+        for(Hasta__c hast:ListHasta){
+         Hasta__Share newShare = new Hasta__Share();
+         newShare.ParentId =hast.id;
+         newShare.UserOrGroupId = hast.doktor__c;
+         newShare.AccessLevel = 'Edit';
+         newShare.RowCause = 'Manual'; 
+         ListSharing.add(newShare);   
+        } 
+        insert ListSharing;
+    
+    }  
+    
+    //2.Way
+    public static void SharingWithParamtr(List< Hasta__c> ListHasta,ID withWhomToShare ){
+        
+      
+         List< Hasta__Share> ListSharing = new  List< Hasta__Share>(); 
+        for(Hasta__c hast:ListHasta){
+         Hasta__Share newShare = new Hasta__Share();
+         newShare.ParentId =hast.id;
+         newShare.UserOrGroupId = withWhomToShare;
+         newShare.AccessLevel = 'Edit';
+         newShare.RowCause = 'Manual'; 
+         ListSharing.add(newShare);   
+        } 
+        insert ListSharing;
+     }
+    //3.Yol
+ public static void shareWith(List<Hasta__c> hastaList, String withWhomToShare){
+        withWhomToShare = withWhomToShare.toLowerCase();
+        List<Hasta__Share> yeniSharingList = new List<Hasta__Share>();
+           
+           for(Hasta__c hasta : hastaList){
+               
+               Hasta__Share yeniPaylasim = new Hasta__Share();
+               yeniPaylasim.ParentId = hasta.Id;
+               if(withWhomToShare == 'hemsire'){
+                  yeniPaylasim.UserOrGroupId = hasta.Hem_ire__c; 
+               }else if(withWhomToShare == 'doctor'){
+                   yeniPaylasim.UserOrGroupId = hasta.doktor__c;
+               }else{
+                   break;
+               }
+               yeniPaylasim.AccessLevel = 'Edit';
+               yeniPaylasim.RowCause = 'Manual';
+               yeniSharingList.add(yeniPaylasim);
+           }
+           Database.insert(yeniSharingList);
+    }
+ //4.Way   
+  public static   Hasta__Share   paylasmaRecordOlustur(ID hastaninIdsi ,ID paylasilacakKisi) {
+        
+        Hasta__Share  paylas = new Hasta__Share();
+        paylas.ParentId= hastaninIdsi;
+        paylas.UserOrGroupId = paylasilacakKisi;
+        paylas.AccessLevel = 'edit';
+        paylas.RowCause = 'manual';
+        
+        return paylas;
+        
+        
+    }
+   
+}
